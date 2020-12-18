@@ -1,41 +1,78 @@
 import axios from 'axios';
 import React,{useState,useEffect} from 'react'
 import { FiSend } from 'react-icons/fi';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import colors from '../components/colors';
 import MainButton from '../components/MainButton';
 
 export default function SendExam(){
     const [year,setYear] = useState('');
-    const [periods,setPeriods] = useState([]);
-    const [periodId,setPeriod] = useState('');
-    const [subject,setSubject] = useState('');
-    const [professor,setProfessor] = useState('');
+    const [periodsList,setPeriodsList] = useState([]);
+    const [professorsList,setProfessorsList] = useState([]);
+    const [subjectsList,setSubjectsList] = useState([]);
+    const [periodId,setPeriod] = useState();
+    const [subjectId,setSubjectId] = useState("null");
+    const [professorId,setProfessorId] = useState("null");
     const [examUrl,setExamUrl] = useState('');
     const [buttonDisabled,setButtonDisabled] = useState(false);
+    const history = useHistory();
     function submitForm(e){
-        e.preventDefault();
-        if(buttonDisabled) return;
+        if(subjectId === "null"){
+            return alert("Please select a subject")
+        } else if(professorId === "null"){
+            return alert("Please select a professor")
+        } else if(setButtonDisabled){
+            return;
+        }
         setButtonDisabled(true);
-
-        const req = axios.post("http://localhost:3000/api/exams",{});
+        const req = axios.post("http://localhost:3000/api/exams",{
+            year,
+            subjectId,
+            professorId,
+            periodId,
+            URL: examUrl
+        });
         req.then((response)=>{
-
+            alert('sucess');
+            setButtonDisabled(false);
         }).catch(e=>{
-            console.log(e);
+            console.log(e.response.message);
+            setButtonDisabled(false);
         });
 
     }
-    console.log(periods);
+    
     useEffect(() => {
         getPeriods();
+        getProfessors();
+        getSubjects();
     }, [])
+
+    useEffect(() => {
+        getProfessors();
+    }, [subjectId])
+
+    useEffect(() => {
+        getSubjects();
+    }, [professorId])
 
     function getPeriods(){
         const req = axios.get("http://localhost:3000/api/periods");
-        req.then(response => setPeriods(response.data));
+        req.then(response => setPeriodsList(response.data));
         req.catch(e=>console.log(e));
     }
+    function getProfessors(){
+        const req = axios.get(`http://localhost:3000/api/professors/subject/${subjectId}`);
+        req.then(response => setProfessorsList(response.data));
+        req.catch(e=>console.log(e));
+    }
+    function getSubjects(){
+        const req = axios.get(`http://localhost:3000/api/subjects/professor/${professorId}`);
+        req.then(response => setSubjectsList(response.data));
+        req.catch(e=>console.log(e));
+    }
+
     return(
         <StyledSend>
             <h1>Send a Exam</h1>
@@ -47,30 +84,32 @@ export default function SendExam(){
                     name="year"
                     placeholder="Year"
                     required
+
                 />
-                <select defaultValue="1" onChange={(e)=>setPeriod(e.target.value)} name="period">
+                <select defaultValue="" onChange={(e)=>setPeriod(e.target.value)} name="period">
+                    <option value="" hidden disabled>Select Period</option>
                     {
-                        periods.map((p)=>{
+                        periodsList.map((p)=>{
                             return <option key={p.id} value={p.id}>{p.name}</option>
                         })
                     }
                 </select>
-                <input
-                    type="text"
-                    value={subject}
-                    onChange={(e) => setSubject(e.target.value)}
-                    name="subject"
-                    placeholder="Subject"
-                    required
-                />
-                <input
-                    type="text"
-                    value={professor}
-                    onChange={(e) => setProfessor(e.target.value)}
-                    name="professor"
-                    placeholder="Professor"
-                    required
-                />
+                <select defaultValue="null" onChange={(e)=>setSubjectId(e.target.value)} name="subject">
+                    <option value="null">Select Subject</option>
+                    {
+                        subjectsList.map((s)=>{
+                            return <option key={s.id} value={s.id}>{s.name}</option>
+                        })
+                    }
+                </select>
+                <select defaultValue="null" onChange={(e)=>setProfessorId(e.target.value)} name="professor">
+                    <option value="null" >Select Professor</option>
+                    {
+                        professorsList.map((p)=>{
+                            return <option key={p.id} value={p.id}>{p.name}</option>
+                        })
+                    }
+                </select>
                 <input
                     type="url"
                     value={examUrl}
@@ -85,6 +124,9 @@ export default function SendExam(){
                     Send
                 </MainButton>
             </StyledForm>
+            <MainButton>
+                <span  onClick={()=>history.push('/')} >Back</span>
+            </MainButton>
         </StyledSend>
     );
 }
@@ -118,6 +160,7 @@ const StyledForm = styled.form`
         padding:0 15px;
         margin-bottom:10px;
         color:#333;
+        border:none;
         &::placeholder{
             font-size:18px;
             color:#333;

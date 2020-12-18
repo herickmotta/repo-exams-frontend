@@ -1,17 +1,18 @@
 import axios from 'axios';
 import React,{useState,useEffect} from 'react'
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import colors from '../components/colors';
 import ItemList from '../components/ItemList'
+import MainButton from '../components/MainButton';
 
 export default function SearchExam() {
     const [listBy,setListBy] = useState('subject');
     const [list,setList] = useState([]);
+    const history = useHistory();
     useEffect(()=>{
         getExams();
     },[listBy]);
-
-    console.log(listBy);
     function getExams(){
         const req = axios.get(`http://localhost:3000/api/exams?listBy=${listBy}`);
         req.then((response)=>{
@@ -43,6 +44,9 @@ export default function SearchExam() {
                     )
                 }
             </ExamRepository>
+            <MainButton>
+                <span onClick={()=>history.push('/')} >Back</span>
+            </MainButton>
         </StyledSearch>
     );
 }
