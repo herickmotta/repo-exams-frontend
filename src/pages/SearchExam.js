@@ -8,7 +8,6 @@ export default function SearchExam() {
     const [listBy,setListBy] = useState('subject');
     const [list,setList] = useState([]);
     useEffect(()=>{
-        console.log('me chamou')
         getExams();
     },[listBy]);
 
@@ -50,6 +49,7 @@ export default function SearchExam() {
 
 const StyledSearch = styled.div`
     width: 100vw;
+    height: calc(100vh - 70px);
     display:flex;
     flex-direction:column;
     align-items:center;
@@ -60,6 +60,7 @@ const StyledSearch = styled.div`
         color: ${colors.lightblue};
         font-size:28px;
     }
+    overflow:hidden;
 `
 
 const ExamRepository = styled.div`
@@ -69,7 +70,8 @@ const ExamRepository = styled.div`
     width:80%;
     border-radius:10px;
     margin: 15px 0;
-    min-height:200px;
+    height:60%;
+    overflow-y: scroll;
 `
 const EmptyBox = styled.div`
     flex-grow:1;
