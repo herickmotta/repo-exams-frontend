@@ -17,7 +17,7 @@ export default function SearchExam() {
         const req = axios.get(`https://herickmotta-api.herokuapp.com/api/exams?listBy=${listBy}`);
         req.then((response)=>{
             setList(response.data);
-        }).catch(e=>alert(e.response.data.error));
+        }).catch(e=>alert(e));
     }
     return (
         <StyledSearch>
