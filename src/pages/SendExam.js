@@ -23,7 +23,7 @@ export default function SendExam(){
             return alert("Please select a subject")
         } else if(professorId === "null"){
             return alert("Please select a professor")
-        } else if(setButtonDisabled){
+        } else if(buttonDisabled){
             return;
         }
         setButtonDisabled(true);
