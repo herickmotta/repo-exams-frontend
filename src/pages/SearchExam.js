@@ -14,7 +14,7 @@ export default function SearchExam() {
         getExams();
     },[listBy]);
     function getExams(){
-        const req = axios.get(`http://localhost:3000/api/exams?listBy=${listBy}`);
+        const req = axios.get(`https://herickmotta-api.herokuapp.com/api/exams?listBy=${listBy}`);
         req.then((response)=>{
             setList(response.data);
         }).catch(e=>console.log(e));

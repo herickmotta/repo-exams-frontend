@@ -26,7 +26,7 @@ export default function SendExam(){
             return;
         }
         setButtonDisabled(true);
-        const req = axios.post("http://localhost:3000/api/exams",{
+        const req = axios.post("https://herickmotta-api.herokuapp.com/api/exams",{
             year,
             subjectId,
             professorId,
@@ -58,17 +58,17 @@ export default function SendExam(){
     }, [professorId])
 
     function getPeriods(){
-        const req = axios.get("http://localhost:3000/api/periods");
+        const req = axios.get("https://herickmotta-api.herokuapp.com/api/periods");
         req.then(response => setPeriodsList(response.data));
         req.catch(e=>console.log(e));
     }
     function getProfessors(){
-        const req = axios.get(`http://localhost:3000/api/professors/subject/${subjectId}`);
+        const req = axios.get(`https://herickmotta-api.herokuapp.com/api/professors/subject/${subjectId}`);
         req.then(response => setProfessorsList(response.data));
         req.catch(e=>console.log(e));
     }
     function getSubjects(){
-        const req = axios.get(`http://localhost:3000/api/subjects/professor/${professorId}`);
+        const req = axios.get(`https://herickmotta-api.herokuapp.com/api/subjects/professor/${professorId}`);
         req.then(response => setSubjectsList(response.data));
         req.catch(e=>console.log(e));
     }
