@@ -21,7 +21,7 @@ const StyledHome = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height:100vh;
+    height:calc(100vh - 70px);
     a{
         text-align:center;
         margin-bottom:20px;
