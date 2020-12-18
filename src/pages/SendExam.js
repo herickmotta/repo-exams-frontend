@@ -18,6 +18,7 @@ export default function SendExam(){
     const [buttonDisabled,setButtonDisabled] = useState(false);
     const history = useHistory();
     function submitForm(e){
+        e.preventDefault();
         if(subjectId === "null"){
             return alert("Please select a subject")
         } else if(professorId === "null"){
@@ -37,7 +38,7 @@ export default function SendExam(){
             alert('sucess');
             setButtonDisabled(false);
         }).catch(e=>{
-            console.log(e.response.message);
+            alert(e.response.message);
             setButtonDisabled(false);
         });
 
