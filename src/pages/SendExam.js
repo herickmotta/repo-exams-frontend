@@ -38,7 +38,7 @@ export default function SendExam(){
             alert('sucess');
             setButtonDisabled(false);
         }).catch(e=>{
-            alert(e.response.message);
+            alert(e.response.data.error);
             setButtonDisabled(false);
         });
 
