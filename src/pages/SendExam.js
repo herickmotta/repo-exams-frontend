@@ -1,4 +1,5 @@
-import React,{useState} from 'react'
+import axios from 'axios';
+import React,{useState,useEffect} from 'react'
 import { FiSend } from 'react-icons/fi';
 import styled from 'styled-components';
 import colors from '../components/colors';
@@ -6,14 +7,39 @@ import MainButton from '../components/MainButton';
 
 export default function SendExam(){
     const [year,setYear] = useState('');
-    const [period,setPeriod] = useState('');
+    const [periods,setPeriods] = useState([]);
+    const [periodId,setPeriod] = useState('');
     const [subject,setSubject] = useState('');
     const [professor,setProfessor] = useState('');
     const [examUrl,setExamUrl] = useState('');
+    const [buttonDisabled,setButtonDisabled] = useState(false);
+    function submitForm(e){
+        e.preventDefault();
+        if(buttonDisabled) return;
+        setButtonDisabled(true);
+
+        const req = axios.post("http://localhost:3000/api/exams",{});
+        req.then((response)=>{
+
+        }).catch(e=>{
+            console.log(e);
+        });
+
+    }
+    console.log(periods);
+    useEffect(() => {
+        getPeriods();
+    }, [])
+
+    function getPeriods(){
+        const req = axios.get("http://localhost:3000/api/periods");
+        req.then(response => setPeriods(response.data));
+        req.catch(e=>console.log(e));
+    }
     return(
         <StyledSend>
             <h1>Send a Exam</h1>
-            <StyledForm>
+            <StyledForm onSubmit={submitForm}>
                 <input
                     type="text"
                     value={year}
@@ -22,14 +48,13 @@ export default function SendExam(){
                     placeholder="Year"
                     required
                 />
-                <input
-                    type="text"
-                    value={period}
-                    onChange={(e) => setPeriod(e.target.value)}
-                    name="period"
-                    placeholder="Period"
-                    required
-                />
+                <select defaultValue="1" onChange={(e)=>setPeriod(e.target.value)} name="period">
+                    {
+                        periods.map((p)=>{
+                            return <option key={p.id} value={p.id}>{p.name}</option>
+                        })
+                    }
+                </select>
                 <input
                     type="text"
                     value={subject}
@@ -84,13 +109,13 @@ const StyledForm = styled.form`
     flex-direction:column;
     align-items:center;
     width:80%;
-    input{
+    input,select{
         background:#FFF;
         height:38px;
         width:100%;
         font-size:18px;
         border-radius:5px;
-        padding:15px;
+        padding:0 15px;
         margin-bottom:10px;
         color:#333;
         &::placeholder{
