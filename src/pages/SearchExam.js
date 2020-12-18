@@ -1,10 +1,24 @@
-import React,{useState} from 'react'
+import axios from 'axios';
+import React,{useState,useEffect} from 'react'
 import styled from 'styled-components';
 import colors from '../components/colors';
+import ItemList from '../components/ItemList'
 
 export default function SearchExam() {
     const [listBy,setListBy] = useState('subject');
-    const [exams,setExams] = useState([]);
+    const [list,setList] = useState([]);
+    useEffect(()=>{
+        console.log('me chamou')
+        getExams();
+    },[listBy]);
+
+    console.log(listBy);
+    function getExams(){
+        const req = axios.get(`http://localhost:3000/api/exams?listBy=${listBy}`);
+        req.then((response)=>{
+            setList(response.data);
+        }).catch(e=>console.log(e));
+    }
     return (
         <StyledSearch>
             <h1>Search a Exam</h1>
@@ -17,11 +31,17 @@ export default function SearchExam() {
             </ListByBox>
 
             <ExamRepository>
-                {exams.length === 0 
+                {list.length === 0 
                     ?
                     <EmptyBox>No exams found :(</EmptyBox>
                     :
-                    ''
+                    list.map(item=>
+                        <ItemList
+                            listBy={listBy}
+                            key={item.id}
+                            item={item}
+                        />
+                    )
                 }
             </ExamRepository>
         </StyledSearch>
